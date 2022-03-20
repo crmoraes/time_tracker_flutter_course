@@ -7,14 +7,14 @@ class CustomElevatedButton extends StatelessWidget {
     required this.color,
     this.borderRadius = 10.0,
     this.height = 50.0,
-    required this.onPressed,
-  })  : super(key: key);
+    this.onPressed,
+  }) : super(key: key);
 
   final Widget child;
   final Color color;
   final double borderRadius;
   final double height;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
