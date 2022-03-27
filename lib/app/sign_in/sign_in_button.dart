@@ -6,7 +6,7 @@ class SignInButton extends CustomElevatedButton {
     required String text,
     required Color color,
     required Color textColor,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
   }) : super(key: key,
     child: Text(text, style: TextStyle(color: textColor, fontSize: 15.0,)),
     color: color,
