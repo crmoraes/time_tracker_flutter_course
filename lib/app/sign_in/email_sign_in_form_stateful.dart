@@ -2,21 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/validators.dart';
-import 'package:time_tracker_flutter_course/common_widget/show_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/common_widget/show_exception_alert_dialog.dart';
 import '../../common_widget/custom_elevated_button.dart';
 import '../../services/auth.dart';
 
 enum EmailSignFormType { signIn, register }
 
-class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  EmailSignInForm({Key? key}) : super(key: key);
+class EmailSignInFormStateful extends StatefulWidget with EmailAndPasswordValidators {
+  EmailSignInFormStateful({Key? key}) : super(key: key);
 
   @override
-  State<EmailSignInForm> createState() => _EmailSignInFormState();
+  State<EmailSignInFormStateful> createState() => _EmailSignInFormStatefulState();
 }
 
-class _EmailSignInFormState extends State<EmailSignInForm> {
+class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -38,7 +37,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     super.dispose();
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     //print('email: ${_emailController.text}, password ${_passwordController.text}');
     setState(() {
       _submitted = true;
