@@ -37,7 +37,7 @@ class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
     super.dispose();
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     //print('email: ${_emailController.text}, password ${_passwordController.text}');
     setState(() {
       _submitted = true;
