@@ -48,10 +48,11 @@ class _EmailSignInFormChangeNotifierState
   }
 
   Future<void> _submit() async {
+    // sample user: test@test.com - Welcome11
     try {
-      bool? confirmedCreate = false;
-      if (model.formType == EmailSignFormType.register) {
-        confirmedCreate = await showAlertDialog(
+      bool? continueLogin = model.formType.toString() == EmailSignFormType.signIn.toString() ? true : false;
+      if (continueLogin == false) {
+        continueLogin = await showAlertDialog(
           context,
           title: 'New Account',
           content: 'Create new Account?',
@@ -59,9 +60,8 @@ class _EmailSignInFormChangeNotifierState
           defaultActionText: 'Yes',
         );
       }
-      print('{Form type ${model.formType} & confirmation $confirmedCreate');
-      if ((model.formType == EmailSignFormType.signIn) ||
-          (confirmedCreate == true)) {
+
+      if (continueLogin == true) {
         await model.submit();
         Navigator.of(context).pop();
       }
