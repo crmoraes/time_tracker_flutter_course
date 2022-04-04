@@ -1,6 +1,6 @@
 
 class Job {
-  Job({required this.name, required this.ratePerHour});
+  Job({required this.name, required this.ratePerHour,});
 
   final String name;
   final int ratePerHour;
@@ -15,9 +15,11 @@ class Job {
   }
 
   Map<String, dynamic> toMap() {
+    final createdDate = DateTime.now();
     return {
       'name': name,
       'ratePerHour': ratePerHour,
+      'createdDate': createdDate,
     };
   }
 }

@@ -15,8 +15,8 @@ class FirestoreDatabase implements Database {
   final _service = FirestoreService.instance;
 
   @override
-  Future<void> createJob(Job job) => _service.setData(
-    path: APIPath.job(uid, 'job_abc'),
+  Future<void> createJob(Job job) => _service.addData(
+    path: APIPath.jobs(uid),
     data: job.toMap(),
   );
 
