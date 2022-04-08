@@ -7,30 +7,48 @@ import 'package:time_tracker_flutter_course/common_widget/show_exception_alert_d
 import '../../../services/database.dart';
 import '../models/job.dart';
 
-class AddJobPage extends StatefulWidget {
-  const AddJobPage({Key? key, required this.database}) : super(key: key);
+class EditJobPage extends StatefulWidget {
+  const EditJobPage({
+    Key? key,
+    required this.database,
+    this.job,
+  }) : super(key: key);
 
   final Database database;
+  final Job? job;
 
-  static Future<void> show(BuildContext context) async {
-    final database = Provider.of<Database>(context, listen: false);
+  static Future<void> show(BuildContext context, {required Database database, Job? job}) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => AddJobPage(database: database),
+        builder: (context) => EditJobPage(
+          database: database,
+          job: job,
+        ),
         fullscreenDialog: true,
       ),
     );
   }
 
   @override
-  State<AddJobPage> createState() => _AddJobPageState();
+  State<EditJobPage> createState() => _EditJobPageState();
 }
 
-class _AddJobPageState extends State<AddJobPage> {
+class _EditJobPageState extends State<EditJobPage> {
   final _formKey = GlobalKey<FormState>();
 
+  String _id = '';
   String _name = '';
   int _ratePerHour = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.job != null) {
+      _id = widget.job!.id;
+      _name = widget.job!.name;
+      _ratePerHour = widget.job!.ratePerHour;
+    }
+  }
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -44,18 +62,26 @@ class _AddJobPageState extends State<AddJobPage> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
-        final jobs = await widget.database.jobsStream().first;
-        final allNames = jobs.map((job) => job!.name).toList();
-        if (allNames.contains(_name)) {
-          showAlertDialog(
-            context,
-            title: 'Name already used',
-            content: 'Please choose a different name',
-            defaultActionText: 'OK',
-          );
+        if (widget.job == null) {
+          // CREATE
+          final jobs = await widget.database.jobsStream().first;
+          final allNames = jobs.map((job) => job.name).toList();
+          if (allNames.contains(_name)) {
+            showAlertDialog(
+              context,
+              title: 'Name already used',
+              content: 'Please choose a different name',
+              defaultActionText: 'OK',
+            );
+          } else {
+            final job = Job(id: _id, name: _name, ratePerHour: _ratePerHour);
+            await widget.database.createJob(job);
+            Navigator.of(context).pop();
+          }
         } else {
-          final job = Job(name: _name, ratePerHour: _ratePerHour);
-          await widget.database.createJob(job);
+          // UPDATE
+          final job = Job(id: _id, name: _name, ratePerHour: _ratePerHour);
+          await widget.database.setJob(job);
           Navigator.of(context).pop();
         }
       } on FirebaseException catch (e) {
@@ -73,7 +99,7 @@ class _AddJobPageState extends State<AddJobPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: const Text('New Job'),
+        title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
         actions: <Widget>[
           TextButton(
             child: const Text(
@@ -117,11 +143,13 @@ class _AddJobPageState extends State<AddJobPage> {
     return [
       TextFormField(
         decoration: const InputDecoration(labelText: 'Job Name'),
+        initialValue: _name,
         validator: (value) => value!.isNotEmpty ? null : 'Name can\'t be Empty',
         onSaved: (value) => _name = value ?? '',
       ),
       TextFormField(
         decoration: const InputDecoration(labelText: 'Rate Per Hour'),
+        initialValue: _ratePerHour != 0 ? '$_ratePerHour' : null,
         keyboardType: const TextInputType.numberWithOptions(
           signed: false,
           decimal: false,
