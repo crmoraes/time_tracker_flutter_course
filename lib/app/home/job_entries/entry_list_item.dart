@@ -77,14 +77,15 @@ class EntryListItem extends StatelessWidget {
 
 class DismissibleEntryListItem extends StatelessWidget {
   const DismissibleEntryListItem({
-    required this.key,
+    Key? key,
+    required this.currentKey,
     required this.entry,
     required this.job,
     required this.onDismissed,
     required this.onTap,
-  }) : super(key: key);
+  }) : super(key: currentKey);
 
-  final Key key;
+  final Key currentKey;
   final Entry entry;
   final Job job;
   final VoidCallback onDismissed;
@@ -100,7 +101,7 @@ class DismissibleEntryListItem extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
             child: Icon(Icons.delete, color: Colors.white),
           )),
-      key: key,
+      key: currentKey,
       direction: DismissDirection.endToStart,
       onDismissed: (direction) => onDismissed(),
       child: EntryListItem(

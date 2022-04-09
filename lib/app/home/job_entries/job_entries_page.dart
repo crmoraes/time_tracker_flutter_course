@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/home/job_entries/entry_list_item.dart';
@@ -21,7 +22,7 @@ class JobEntriesPage extends StatelessWidget {
   static Future<void> show(BuildContext context, Job job) async {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
-      MaterialPageRoute(
+      CupertinoPageRoute(
         fullscreenDialog: false,
         builder: (context) => JobEntriesPage(database: database, job: job),
       ),
@@ -51,24 +52,22 @@ class JobEntriesPage extends StatelessWidget {
           appBar: AppBar(
             elevation: 2.0,
             title: Text(jobName),
+            centerTitle: true,
             actions: <Widget>[
-              TextButton(
-                child: const Text(
-                  'Edit',
-                  style: TextStyle(fontSize: 18.0, color: Colors.white),
-                ),
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.white),
                 onPressed: () =>
                     EditJobPage.show(context, database: database, job: job),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add, color: Colors.white),
+                onPressed: () => job != null
+                    ? EntryPage.show(context: context, database: database, job: job)
+                    : null,
               ),
             ],
           ),
           body: job != null ? _buildContent(context, job) : null,
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () => job != null
-                ? EntryPage.show(context: context, database: database, job: job)
-                : null,
-          ),
         );
       },
     );
@@ -82,7 +81,7 @@ class JobEntriesPage extends StatelessWidget {
           snapshot: snapshot,
           itemBuilder: (context, entry) {
             return DismissibleEntryListItem(
-              key: Key('entry-${entry.id}'),
+              currentKey: Key('entry-${entry.id}'),
               entry: entry,
               job: job,
               onDismissed: () => _deleteEntry(context, entry),

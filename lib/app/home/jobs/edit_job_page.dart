@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/common_widget/show_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/common_widget/show_exception_alert_dialog.dart';
 
@@ -17,8 +16,9 @@ class EditJobPage extends StatefulWidget {
   final Database database;
   final Job? job;
 
-  static Future<void> show(BuildContext context, {required Database database, Job? job}) async {
-    await Navigator.of(context).push(
+  static Future<void> show(BuildContext context,
+      {required Database database, Job? job}) async {
+    await Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => EditJobPage(
           database: database,
